@@ -1,62 +1,227 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Safety Check</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>ตรวจสอบอุปกรณ์</title>
+
   <style>
+    html { font-size: 18px; }
+
     body {
-      font-family: Arial;
-      background: #111;
-      color: #fff;
-      padding: 20px;
+      margin: 0;
+      font-family: 'Prompt', sans-serif;
+      background-color: #474645;
+      color: #e5e7eb;
     }
 
-    .card {
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(55, 54, 53, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #C084FC;
+      font-size: 1.6rem;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .thai-date {
+      font-size: 1rem;
+      color: #FACC15;
+    }
+
+    input[type="date"] {
+      padding: 6px 10px;
+      font-size: 1rem;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 1px solid #555;
+      border-radius: 6px;
+    }
+
+    .group {
+      padding: 25px;
+      padding-bottom: 0;
+    }
+
+    .group h2 {
+      margin: 0 0 10px 0;
+      font-weight: 400;
+      border-left: 4px solid #4da3ff;
+      padding-left: 8px;
+      font-size: 1rem;
+    }
+
+    .images {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .images img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 10px;
       background: #1e1e1e;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s ease;
+      cursor: pointer;
     }
 
-    .ok { color: #4caf50; }
-    .bad { color: #f44336; }
+    .images img:hover { transform: scale(1.03); }
+
+    @media (max-width: 1024px) {
+      .images { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .loading-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 0;
+    }
+
+    .spinner {
+      width: 80px;
+      height: 80px;
+      border: 6px solid #2a2a2a;
+      border-top: 6px solid #C084FC;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty {
+      padding: 40px;
+      text-align: center;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
   </style>
 </head>
+
 <body>
 
-<h2>รายการตรวจสอบอุปกรณ์</h2>
-<div id="result">กำลังโหลด...</div>
+  <div class="header">
+    <div class="title-row">
+      <h1>ผลการตรวจสอบอุปกรณ์</h1>
+      <div class="thai-date">
+        <span id="dateText"></span>
+      </div>
+    </div>
+    <input type="date" id="datePicker">
+  </div>
 
-<script>
+  <div id="content"></div>
 
-const apiURL = "https://script.google.com/macros/s/AKfycbz5L6e_yANo7iugL3IfLELukgy3-qEpl4_SRixWmk7Z9tOE3oWn5LPf4niOBZlMy9Ax9A/exec";
+  <script>
 
-fetch(apiURL)
-  .then(response => response.json())
-  .then(data => {
+    const API_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 
-    let html = "";
+    function formatThaiDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('th-TH', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    }
 
-    data.forEach(item => {
-      html += `
-        <div class="card">
-          <strong>${item.name}</strong><br>
-          สถานะ: 
-          <span class="${item.status === 'ปกติ' ? 'ok' : 'bad'}">
-            ${item.status}
-          </span>
-        </div>
-      `;
+    function formatDate(date) {
+      return date.toISOString().split('T')[0];
+    }
+
+    function showLoading() {
+      document.getElementById('content').innerHTML =
+        `<div class="loading-wrapper"><div class="spinner"></div></div>`;
+    }
+
+    function loadData() {
+      const dateValue = document.getElementById('datePicker').value;
+
+      document.getElementById('dateText').innerText =
+        formatThaiDate(dateValue);
+
+      showLoading();
+
+      fetch(API_URL + "?date=" + dateValue)
+        .then(res => res.json())
+        .then(renderData)
+        .catch(err => {
+          console.error(err);
+          document.getElementById('content').innerHTML =
+            `<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>`;
+        });
+    }
+
+    function renderData(data) {
+      const container = document.getElementById('content');
+      container.innerHTML = '';
+
+      if (!Array.isArray(data) || data.length === 0) {
+        container.innerHTML =
+          `<div class="empty">ไม่พบรูปภาพในวันที่เลือก</div>`;
+        return;
+      }
+
+      data.forEach(groupData => {
+        const group = document.createElement('div');
+        group.className = 'group';
+
+        const title = document.createElement('h2');
+        title.innerText = groupData.name;
+
+        const imagesDiv = document.createElement('div');
+        imagesDiv.className = 'images';
+
+        groupData.images.forEach(url => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.loading = 'lazy';
+          imagesDiv.appendChild(img);
+        });
+
+        group.appendChild(title);
+        group.appendChild(imagesDiv);
+        container.appendChild(group);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const formatted = formatDate(today);
+
+      document.getElementById('datePicker').value = formatted;
+      document.getElementById('dateText').innerText =
+        formatThaiDate(formatted);
+
+      document.getElementById('datePicker')
+        .addEventListener('change', loadData);
+
+      loadData();
     });
 
-    document.getElementById("result").innerHTML = html;
-  })
-  .catch(err => {
-    document.getElementById("result").innerHTML = "โหลดข้อมูลไม่สำเร็จ";
-    console.error(err);
-  });
-
-</script>
+  </script>
 
 </body>
 </html>
