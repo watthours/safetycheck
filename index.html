@@ -134,8 +134,8 @@
   <div id="content"></div>
 
   <script>
-
-    const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjoJ22Z-Kt91WUBazrl7Unes7iotGYI7WsctW9tBaUm-FFG1FuJcpCXuJA3cPnCYw9rExDgiW_kBd_OjpWWZp_3k-33TVZdeuKcPKQMeYzYi_2WLaGqwwT7RrmvL191zNaVRBsmNDhJ0ZM5p8ukcq04IEz2MNIeLaUnTKNBom3J5NFYHuzpBWTloaH8CTc1v_fqpsmYGAPvCyfXnK3ndr58qyiuFsKhIQenz1I-9Aw0u2-_c4niiXe0EjLDVhrtKkp0t-m0j8HasAxOOcMA1Lw1VhJlW4rB47a4dRRaa7vv_WynXFvEeefIKuB8gg&lib=MBBWFdD0k-fgQhmEgo914SplvGM40s_KU";
+    const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrSaQV_FLUoBPsEcxO8V7UcFioFJgWWspFTSMAB5BdcH3qMYabbYXlpKsV5QktnJVWMLPihp7Q5tSxYFLnqUdTInA9z5qLYH63NJFu6rokz1_PWaWrGFEx40hNf4M0gnYVeAF6-WWpd7PT7OOZumtO8wXmUah_4earKeb6MK97blqRvCQDAJQEJU-xr1EH894dF6ANnfEx5za9PdUOt0DO-2GdtcPjBSC2769MtkHlK4bLqby-3XWJ9L9L-se0RXGz-IZKqrVi7tSedDpUyeUEzyuxqz-mANilQHLxruXgS-ocTJDv3bdY9DnCHixw&lib=MfAMH-6XNKAEvwciEpm8ne5lvGM40s_KU"
+    // const API_URL = "https://script.google.com/macros/s/AKfycbwwlutlqp5bDAxnWttuH0nrN3L2PtSt3G7Ga-XoNQ8zUVLoHmYjtrkPKt5snKhleaVH0Q/exec";
 
     function formatThaiDate(dateStr) {
       const date = new Date(dateStr);
@@ -172,6 +172,15 @@
           document.getElementById('content').innerHTML =
             `<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>`;
         });
+
+        // fetch(API_URL + "?date=" + dateValue, {
+        //   method: "GET",
+        //   redirect: "follow",
+        //   headers: {
+        //     "Accept": "application/json"
+        //   }
+        // })
+
     }
 
     function renderData(data) {
