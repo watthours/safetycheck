@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <title>ตรวจสอบอุปกรณ์</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
   <style>
+    /* ================= BASE ================= */
     html {
       font-size: 18px;
     }
@@ -15,10 +17,11 @@
     body {
       margin: 0;
       font-family: 'Prompt', sans-serif;
-      background-color: #474645;
+      background: #474645;
       color: #e5e7eb;
     }
 
+    /* ================= HEADER ================= */
     .header {
       position: sticky;
       top: 0;
@@ -26,51 +29,57 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
-      background: rgba(55, 54, 53, 0.95);
+      padding: 12px 20px;
+      background: rgba(55, 54, 53, 0.97);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .header h1 {
-      margin: 0;
-      margin-top: -5px;
-      color: #C084FC;
-      font-size: 1.8rem;
     }
 
     .title-row {
       display: flex;
       align-items: baseline;
-      gap: 15px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
+    .header h1 {
+      margin: 0;
+      color: #C084FC;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
     .thai-date {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #FACC15;
+    }
+
+    .date-picker-wrapper {
+      display: flex;
+      align-items: center;
     }
 
     input[type="date"] {
       padding: 6px 10px;
-      font-size: 1rem;
-      background-color: #1e1e1e;
-      color: #ffffff;
+      font-size: 0.95rem;
+      background: #1e1e1e;
+      color: #fff;
       border: 1px solid #555;
       border-radius: 6px;
+      cursor: pointer;
     }
 
     input[type="date"]::-webkit-calendar-picker-indicator {
       filter: invert(1) brightness(1.5);
-      opacity: 1;
+      cursor: pointer;
     }
 
+    /* ================= CONTENT ================= */
     .group {
-      padding: 25px;
-      padding-bottom: 10;
+      padding: 25px 25px 10px;
     }
 
     .group h2 {
-      margin: 0 0 10px 0;
+      margin: 0 0 10px;
       font-weight: 400;
       border-left: 4px solid #4da3ff;
       padding-left: 8px;
@@ -85,13 +94,13 @@
 
     .images img {
       width: 100%;
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 3/4;
       object-fit: cover;
       border-radius: 10px;
       background: #1e1e1e;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-      transition: transform 0.2s ease;
       cursor: pointer;
+      transition: transform 0.2s ease;
     }
 
     .images img:hover {
@@ -101,18 +110,50 @@
     .loading-wrapper {
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 100px 0;
+      padding: 80px 0;
     }
 
+    .empty {
+      padding: 40px;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    /* ================= MODAL ================= */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.25s;
+      z-index: 2000;
+      cursor: pointer;
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+    }
+
+    /* ================= LOADING ================= */
     .dots {
       display: flex;
       gap: 10px;
     }
 
     .dots span {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       background-color: #C084FC;
       border-radius: 50%;
       animation: bounce 0.6s infinite alternate;
@@ -138,100 +179,86 @@
       }
     }
 
-    .empty {
-      padding: 40px;
-      text-align: center;
-      font-size: 1rem;
-      opacity: 0.8;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.25s ease;
-      z-index: 2000;
-      cursor: pointer;
-    }
-
-    .modal.show {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-      animation: zoomIn 0.2s ease;
-    }
-
-    @keyframes zoomIn {
-      from {
-        transform: scale(0.95);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    @media (max-width: 1024px) {
+    /* ================= RESPONSIVE ================= */
+    @media (max-width:1024px) {
       .images {
         grid-template-columns: repeat(3, 1fr);
       }
-      .thai-date {
-        margin-top: -20px;
+    }
+
+    @media (max-width:768px) {
+      .header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .title-row {
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      input[type="date"] {
+        font-size: 0.85rem;
+        padding: 4px 6px;
       }
     }
-    
   </style>
 </head>
 
 <body>
-
+  <!-- ================= HEADER ================= -->
   <div class="header">
     <div class="title-row">
-      <h1>การตรวจสอบอุปกรณ์</h1>
-      <div class="thai-date">
-        <span id="dateText"></span>
-      </div>
+      <h1 id="mainTitle"></h1>
+      <div class="thai-date" id="dateText"></div>
     </div>
-    <input type="date" id="datePicker">
+
+    <div class="date-picker-wrapper">
+      <input type="date" id="datePicker">
+    </div>
   </div>
 
+  <!-- ================= CONTENT ================= -->
   <div id="content"></div>
 
+  <!-- ================= MODAL ================= -->
   <div id="imageModal" class="modal">
     <img id="modalImg">
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwwlutlqp5bDAxnWttuH0nrN3L2PtSt3G7Ga-XoNQ8zUVLoHmYjtrkPKt5snKhleaVH0Q/exec";
-
-    function formatThaiDate(dateStr) {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('th-TH', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-    }
-
-    function formatDate(date) {
+    /* ================= UTIL ================= */
+    function formatDate(date){
       return date.toISOString().split('T')[0];
     }
 
-    function showLoading() {
+    function formatThaiDate(dateStr){
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('th-TH',{
+        weekday:'long',
+        day:'numeric',
+        month:'long',
+        year:'numeric'
+      });
+    }
+
+    /* ================= TITLE ================= */
+    function updateTitle(dateStr){
+      const title = document.getElementById("mainTitle");
+      const dateText = document.getElementById("dateText");
+
+      if(window.innerWidth <= 768){
+        title.innerText = "การตรวจสอบอุปกรณ์";
+        dateText.innerText = "";
+      }else{
+        title.innerText = "ผลการตรวจสอบอุปกรณ์ความปลอดภัย";
+        dateText.innerText = formatThaiDate(dateStr);
+      }
+    }
+
+    /* ================= LOADING ================= */
+    function showLoading(){
       document.getElementById('content').innerHTML = `
         <div class="loading-wrapper">
           <div class="dots">
@@ -243,12 +270,14 @@
       `;
     }
 
+    /* ================= DATA ================= */
+    const API_URL = "https://script.google.com/macros/s/AKfycbwwlutlqp5bDAxnWttuH0nrN3L2PtSt3G7Ga-XoNQ8zUVLoHmYjtrkPKt5snKhleaVH0Q/exec";
     function loadData() {
       const dateValue = document.getElementById('datePicker').value;
     
-      document.getElementById('dateText').innerText =
-        formatThaiDate(dateValue);
+      document.getElementById('dateText').innerText = formatThaiDate(dateValue);
     
+      updateTitle(dateValue);
       showLoading();
     
       const url = API_URL + "?date=" + dateValue + "&t=" + new Date().getTime();
@@ -267,17 +296,17 @@
         });
     }
 
-    function renderData(data) {
+    function renderData(data){
       const container = document.getElementById('content');
       container.innerHTML = '';
 
-      if (!Array.isArray(data) || data.length === 0) {
+      if(!Array.isArray(data) || data.length === 0){
         container.innerHTML =
           `<div class="empty">ไม่พบรูปภาพในวันที่เลือก</div>`;
         return;
       }
 
-      data.forEach(groupData => {
+      data.forEach(groupData=>{
         const group = document.createElement('div');
         group.className = 'group';
 
@@ -287,11 +316,11 @@
         const imagesDiv = document.createElement('div');
         imagesDiv.className = 'images';
 
-        groupData.images.forEach(url => {
+        groupData.images.forEach(url=>{
           const img = document.createElement('img');
           img.src = url;
           img.loading = 'lazy';
-          img.addEventListener('click', () => openModal(url));
+          img.onclick = () => openModal(url);
           imagesDiv.appendChild(img);
         });
 
@@ -301,34 +330,37 @@
       });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const today = new Date();
-      const formatted = formatDate(today);
-
-      document.getElementById('datePicker').value = formatted;
-      document.getElementById('dateText').innerText =
-        formatThaiDate(formatted);
-
-      document.getElementById('datePicker')
-        .addEventListener('change', loadData);
-
-      loadData();
-    });
-    
+    /* ================= MODAL ================= */
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
-    
-    function openModal(src) {
+
+    function openModal(src){
       modalImg.src = src;
       modal.classList.add('show');
     }
-    
-    function closeModal() {
-      modal.classList.remove('show');
-    }
-    
-    modal.addEventListener('click', closeModal);
-  
+
+    modal.onclick = () => modal.classList.remove('show');
+
+    /* ================= INIT ================= */
+    window.addEventListener('DOMContentLoaded',()=>{
+      const today = new Date();
+      const formatted = formatDate(today);
+
+      const datePicker = document.getElementById('datePicker');
+      datePicker.value = formatted;
+      datePicker.addEventListener('change', loadData);
+
+      updateTitle(formatted);
+      loadData();
+    });
+
+    window.addEventListener('resize',()=>{
+      const currentDate = document.getElementById("datePicker").value;
+      if(currentDate){
+        updateTitle(currentDate);
+      }
+    });
+
   </script>
 
 </body>
