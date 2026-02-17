@@ -64,8 +64,6 @@
       opacity: 1;
     }
 
-
-
     .group {
       padding: 25px;
       padding-bottom: 10;
@@ -98,53 +96,6 @@
 
     .images img:hover {
       transform: scale(1.03);
-    }
-
-    .calendar-floating {
-      position: fixed;
-      right: 20px;
-      bottom: 25px;
-      width: 55px;
-      height: 55px;
-      z-index: 3000;
-    }
-
-    .calendar-floating input {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      /* ทำให้มองไม่เห็น */
-      cursor: pointer;
-      /* แต่ยังคลิกได้ */
-    }
-
-    .calendar-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      font-size: 1.6rem;
-      background: #C084FC;
-      color: #fff;
-      border-radius: 50%;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-      pointer-events: none;
-      /* ให้คลิกทะลุไปที่ input */
-      transition: transform 0.2s ease;
-    }
-
-    .calendar-floating:hover .calendar-icon {
-      transform: scale(1.1);
-    }
-
-
-    #datePicker {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
     }
 
     .loading-wrapper {
@@ -237,11 +188,11 @@
       .images {
         grid-template-columns: repeat(3, 1fr);
       }
-
       .thai-date {
         margin-top: -20px;
       }
     }
+    
   </style>
 </head>
 
@@ -254,13 +205,8 @@
         <span id="dateText"></span>
       </div>
     </div>
-  </div>
-
-  <div class="calendar-floating">
     <input type="date" id="datePicker">
-    <span class="calendar-icon">📅</span>
   </div>
-
 
   <div id="content"></div>
 
@@ -270,30 +216,6 @@
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwwlutlqp5bDAxnWttuH0nrN3L2PtSt3G7Ga-XoNQ8zUVLoHmYjtrkPKt5snKhleaVH0Q/exec";
-
-    function loadData() {
-      const dateValue = document.getElementById('datePicker').value;
-    
-      document.getElementById('dateText').innerText =
-        formatThaiDate(dateValue);
-    
-      showLoading();
-    
-      const url = API_URL + "?date=" + dateValue + "&t=" + new Date().getTime();
-    
-      fetch(url, {
-        method: "GET",
-        redirect: "follow",
-        cache: "no-store"
-      })
-        .then(res => res.json())
-        .then(renderData)
-        .catch(err => {
-          console.error(err);
-          document.getElementById('content').innerHTML =
-            `<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>`;
-        });
-    }
 
     function formatThaiDate(dateStr) {
       const date = new Date(dateStr);
@@ -319,6 +241,30 @@
           </div>
         </div>
       `;
+    }
+
+    function loadData() {
+      const dateValue = document.getElementById('datePicker').value;
+    
+      document.getElementById('dateText').innerText =
+        formatThaiDate(dateValue);
+    
+      showLoading();
+    
+      const url = API_URL + "?date=" + dateValue + "&t=" + new Date().getTime();
+    
+      fetch(url, {
+        method: "GET",
+        redirect: "follow",
+        cache: "no-store"
+      })
+        .then(res => res.json())
+        .then(renderData)
+        .catch(err => {
+          console.error(err);
+          document.getElementById('content').innerHTML =
+            `<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>`;
+        });
     }
 
     function renderData(data) {
@@ -356,21 +302,19 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-
       const today = new Date();
       const formatted = formatDate(today);
 
-      const datePicker = document.getElementById('datePicker');
-      const dateText = document.getElementById('dateText');
+      document.getElementById('datePicker').value = formatted;
+      document.getElementById('dateText').innerText =
+        formatThaiDate(formatted);
 
-      datePicker.value = formatted;
-      dateText.innerText = formatThaiDate(formatted);
-
-      datePicker.addEventListener('change', loadData);
+      document.getElementById('datePicker')
+        .addEventListener('change', loadData);
 
       loadData();
     });
-
+    
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
     
@@ -384,9 +328,7 @@
     }
     
     modal.addEventListener('click', closeModal);
-
-    
-
+  
   </script>
 
 </body>
