@@ -107,8 +107,8 @@
     .spinner {
       width: 200px;
       height: 200px;
-      border: 6px solid #2a2a2a;
-      border-top: 6px solid #C084FC;
+      border: 20px solid #2a2a2a;
+      border-top: 20px solid #C084FC;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
     }
@@ -139,7 +139,6 @@
   <div id="content"></div>
 
   <script>
-    // const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrSaQV_FLUoBPsEcxO8V7UcFioFJgWWspFTSMAB5BdcH3qMYabbYXlpKsV5QktnJVWMLPihp7Q5tSxYFLnqUdTInA9z5qLYH63NJFu6rokz1_PWaWrGFEx40hNf4M0gnYVeAF6-WWpd7PT7OOZumtO8wXmUah_4earKeb6MK97blqRvCQDAJQEJU-xr1EH894dF6ANnfEx5za9PdUOt0DO-2GdtcPjBSC2769MtkHlK4bLqby-3XWJ9L9L-se0RXGz-IZKqrVi7tSedDpUyeUEzyuxqz-mANilQHLxruXgS-ocTJDv3bdY9DnCHixw&lib=MfAMH-6XNKAEvwciEpm8ne5lvGM40s_KU"
     const API_URL = "https://script.google.com/macros/s/AKfycbwwlutlqp5bDAxnWttuH0nrN3L2PtSt3G7Ga-XoNQ8zUVLoHmYjtrkPKt5snKhleaVH0Q/exec";
 
     function formatThaiDate(dateStr) {
@@ -160,33 +159,6 @@
       document.getElementById('content').innerHTML =
         `<div class="loading-wrapper"><div class="spinner"></div></div>`;
     }
-
-    // function loadData() {
-    //   const dateValue = document.getElementById('datePicker').value;
-
-    //   document.getElementById('dateText').innerText =
-    //     formatThaiDate(dateValue);
-
-    //   showLoading();
-      
-    //   fetch(API_URL + "&date=" + dateValue)
-    //     .then(res => res.json())
-    //     .then(renderData)
-    //     .catch(err => {
-    //       console.error(err);
-    //       document.getElementById('content').innerHTML =
-    //         `<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>`;
-        // });
-
-        // fetch(API_URL + "?date=" + dateValue, {
-        //   method: "GET",
-        //   redirect: "follow",
-        //   headers: {
-        //     "Accept": "application/json"
-        //   }
-        // })
-
-    // }
 
     function loadData() {
       const dateValue = document.getElementById('datePicker').value;
